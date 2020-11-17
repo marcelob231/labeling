@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="col-2">
+    <h1 id="count" class="bg-light text-dark"></h1>
+</div>
+<div class="container">
+    <div class="row" style="margin-top: 200px;">
+        <div class="col-md-4 mx-auto text-center">
+            <div class="mx-auto ">
+                <h3 class="bg-light text-dark" id="text">Esperando início</h3>
+            </div>
+            <div class="row mt-5">
+                <div class="container-btns btn-group mx-auto mt-2">
+                    <a class="btn btn-danger p-3 m-3 button5" onclick="send(-1)" id="mau">Péssimo</a>
+                    <a class="btn btn-warning p-3 m-3 button5" onclick="send(-0.5)" id="ruim">Ruim</a>
+                    <a class="btn btn-primary p-3 m-3 button5" onclick="send(0)" id="neutro">Neutro</a>
+                    <a class="btn btn-info p-3 m-3 button5" onclick="send(0.5)" id="bom" >Bom</a>
+                    <a class="btn btn-success p-3 m-3 button5" onclick="send(1)" id="otimo">Ótimo</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<h1><h1>
+<a class="btn-lg btn-success ml-3 button5" onclick="start()" id="">Start</a>
+<script>
+
+function send(valor){
+    number = parseInt(document.getElementById('count').innerHTML)
+    $.ajax({
+        url: '/',
+        type: "POST",
+        data: JSON.stringify({
+                                data_valor: valor,
+                                data_location: number
+        }),
+        contentType: 'application/json; charset=UTF-8',
+        success: function(dat) { 
+            var obj = JSON.parse(dat);
+            document.getElementById('text').innerHTML = obj.message
+            document.getElementById('count').innerHTML = obj.location
+        },
+        error: function(xhr, status, error){
+            var errorMessage = xhr.status + ': ' + xhr.statusText
+            alert('Problemas de conecção com o servidor: Error - ' + errorMessage);
+        }
+    });
+    
+}
+
+function start(){
+    $.ajax({
+        url: '/start',
+        type: "POST",
+        data: JSON.stringify({
+                                data_start: 'start'
+        }),
+        contentType: 'application/json; charset=UTF-8',
+        success: function(dat) { 
+            var obj = JSON.parse(dat);
+            document.getElementById('text').innerHTML = obj.message
+            document.getElementById('count').innerHTML = obj.location
+            
+        },
+        error: function(xhr, status, error){
+            var errorMessage = xhr.status + ': ' + xhr.statusText
+            alert('Problemas de conecção com o servidor: Error - ' + errorMessage);
+        }
+    });
+}
+
+
+
+</script>
+
+{% endblock %}
